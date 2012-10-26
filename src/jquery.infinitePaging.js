@@ -13,6 +13,8 @@
     /**
      * @property
      * List of viewports that have infinite paging bound on them.
+     * TODO: should we keep a reference to individual elements? what if they are removed from DOM?
+     *      In cases where they may be removed from DOM, browser memory may not be released???
      */
     var viewports = {};
     
