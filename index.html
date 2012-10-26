@@ -5,18 +5,30 @@
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title>jQuery.infinitePaging by purtuga</title>
 
+    <link rel="stylesheet" href="stylesheets/main.css">
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/pygment_trac.css">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+    
+    
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script type="text/javascript" src="javascripts/main.js"></script>
+    
   </head>
   <body>
     <div class="wrapper">
       <header>
         <h1>jQuery.infinitePaging</h1>
         <p>A jQuery plugin for automatically load data when scrolling gets close to the bottom of the window/container.</p>
+
+
+        <h2>Demo</h2>
+        <p>
+            See the standalone <a href="demo/example-01.html">demo page</a> for examples on usage.
+        </p>
 
         <p class="view"><a href="https://github.com/purtuga/jquery.infinitePaging">View the Project on GitHub <small>purtuga/jquery.infinitePaging</small></a></p>
 
@@ -28,32 +40,120 @@
         </ul>
       </header>
       <section>
-        <h3>Welcome to GitHub Pages.</h3>
+        
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+<h1>jquery.infinitePaging</h1>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
+<p>jQuery infinitePaging plugin will trigger a user defined function to retrieve the next set of data when the bottom of a given are is reached. Use this to load large datasets in chunks without sacrificing the user experience.</p>
+
+<h2>Usage</h2>
+
+<pre><code>$("#container").infinitePaging({
+    nextPage: function(container) {
+        // retrieve some data...
+        container.showNextPage("some data");
+        container.isLastPage(); // Set this as the last page
+    }
+});
 </code></pre>
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+<h2>Options</h2>
 
-<h3>Designer Templates</h3>
+<ul>
+<li><p><strong>nextPage</strong>        :   <em>Function. <strong>REQUIRED</strong>. Default=null</em> <br />
+                        A function that will be called when new page is needed. Function will be given a scope (this keyword) of the original container and one input parameter: an object containing two methods - <code>showNextPage()</code> and <code>isLastPage()</code>. These methods must be used when the next page of data is ready to be displayed. <br /> The <code>showNextPage()</code> should always be called, even if there is no more data to be shown. This will ensure that the proper state is set on the UI.  The <code>isLastPage()</code> method should be called when there are no more pages of content to be displayed. This method sets the infinitePaging <em>pause</em> to true. This can be reset programmatically by calling the 'pause' method (see below). <em>(Tip: jQuery's .fadeIn() animation is called on each page to be inserted. Set the display css atribute to "none" to animate see the effect.)</em></p>
 
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
+<pre><code>nextPage: function(page){
+    //... do some processing to get data.
+    page.isLastPage();//mark this as the last page. Pauses the infinitePaging plugin.
+    page.nextPage('html content here|jQuery|HTMLNodes')
+}
+</code></pre></li>
+<li><p><strong>bottomOffset</strong>    :   <em>Integer. Optional. Default=200</em> <br />
+                        The minimum distance from the bottom of the scrolling element before the next page is retrieved.</p></li>
+<li><p><strong>loading</strong>         :   <em>String|HTMLNode|jQuery. Optional. Default=<code>"&lt;div&gt;Loading....&lt;div&gt;"</code></em> <br />
+                        The markup to be inserted at the bottom of the container while additinal data is retrieved and loaded. This value is cloned everytime a page is loaded.</p></li>
+<li><p><strong>viewport</strong>        :   <em>HTMLNode, jQuery. Optional. Default=window</em> <br />
+                        The scrolling element (ex. window) that will be watched in order to determine when to retrieve the next page. Set this to an element containing a css fixed <code>height</code> and <code>overflow</code> set to trigger paging inside DOM elements.</p></li>
+</ul>
 
-<h3>Rather Drive Stick?</h3>
+<h2>Methods</h2>
 
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+<h3>$().infinitePaging("pause"[, Boolean])</h3>
 
-<h3>Authors and Contributors</h3>
+<p>Determine if the Infinite Paging is paused or set pause on/off.</p>
 
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+<p>Example: Is paging paused</p>
 
-<h3>Support or Contact</h3>
+<pre><code>$("#container").infinitePaging("pause"); // Return Boolean: true or false.
+</code></pre>
 
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
+<p>Example: Pause infinite paging</p>
+
+<pre><code>$("#container").infinitePaging("pause", true); // returns $("#container") (chainable) 
+</code></pre>
+
+<p>Example: Resume infinite paging</p>
+
+<pre><code>$("#container").infinitePaging("pause", false); // returns $("#container") (chainable) 
+</code></pre>
+
+<h2>HTML Markup Tips</h2>
+
+<h3>DOM Elements</h3>
+
+<p>When using this plugin on scrollable DOM elements, it is best to have the HTML setup so that the scrolling element only has one relative positioned child element. All content should then be inside that one child element. </p>
+
+<p><strong>Example</strong></p>
+
+<pre><code>&lt;div id="viewport" style="height: 400px; width: 200px; overflow: auto;"&gt;
+    &lt;div id="viewportContent"&gt;
+
+        &lt;!-- all your content here --&gt;
+
+    &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+
+<p>The following would set infinitePaging on the above example:</p>
+
+<pre><code>$("#viewportContent").infinitePaging({
+    nextPage: function(page) {
+        // do some stuff to get the next page.
+        page.showNextPage(someData);
+    },
+    viewport: $("#viewport")
+});
+</code></pre>
+
+<h2>License</h2>
+
+<p>Release under the terms of the <a href="http://www.opensource.org/licenses/mit-license.php">MIT</a> License.</p>
+
+<p><em>Copyright 2012 <a href="http://paultavares.wordpress.com/">Paul Tavares</a>. All rights reserved.</em></p>
+
+
+
+
+
+
+
+<!---------------------------------------------------->
+
+        
+        <h2>Author</h2>
+        
+        <span id="ptAuthorInfo">
+        <p><a href="http://paultavares.wordpress.com">Paul Tavares</a> @purtuga</p>
+        
+        <p>Follow me at Twitter <a href="https://twitter.com/paul_tavares">@paul_tavares</a></p> 
+        </span>
+
+    
+
+
+
+
       </section>
       <footer>
         <p>This project is maintained by <a href="https://github.com/purtuga">purtuga</a></p>
@@ -61,6 +161,18 @@ $ git checkout gh-pages
       </footer>
     </div>
     <script src="javascripts/scale.fix.js"></script>
+    <script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-35374531-4']);
+      _gaq.push(['_trackPageview']);
     
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+
+</script>
   </body>
 </html>
